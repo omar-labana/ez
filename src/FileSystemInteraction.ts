@@ -20,6 +20,11 @@ class FileSystemInteraction {
       }
     }
   }
+
+  async writeRepository(repositoryName: string, content: string) {
+    const filePath = `${directory}/${repositoryName}.ts`;
+    await Deno.writeTextFile(filePath, content);
+  }
 }
 
 export default FileSystemInteraction;
