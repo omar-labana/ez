@@ -3,6 +3,7 @@ import { consola } from 'consola';
 import Fetcher from '@/Fetcher.ts';
 import FileSystemInteraction from '@/FileSystemInteraction.ts';
 import Generator from '@/Generator.ts';
+import data from '../swagger.json' with { type: 'json' };
 
 class Sequence {
   document?: Document;
@@ -18,21 +19,31 @@ class Sequence {
 
   async start() {
     try {
-      consola.start(`Parsing Swagger file from ${this.fetcher.url}`);
+      // consola.start(`Parsing Swagger file from ${this.fetcher.url}`);
 
-      this.fetcher.validateURL();
+      // this.fetcher.validateURL();
 
-      consola.success(`Successfully validated Swagger JSON file URL from ${this.fetcher.url}`);
+      // consola.success('Successfully validated URL');
 
-      consola.info(`Fetching Swagger document from ${this.fetcher.url}`);
+      // consola.info('Fetching Swagger document');
 
-      this.document = await this.fetcher.fetchSwaggerDocument();
+      // this.document = await this.fetcher.fetchSwaggerDocument();
 
-      if (!this.document) return;
+      // if (!this.document) return;
 
-      consola.success(`Successfully fetched Swagger document: ${this.document['x-generator']}`);
+      // consola.success('Successfully fetched Swagger document');
+
+      await this.generator.prepare(data as Document);
+
+      consola.success('Successfully prepared generator for typegen');
 
       await this.fileSystemInteraction.prepare();
+
+      consola.success('Successfully prepared file system for typegen');
+
+      await this.generator.generate();
+
+      consola.success('Successfully generated repositories');
     } catch (error) {
       if (error instanceof Error) {
         consola.error(error.message);

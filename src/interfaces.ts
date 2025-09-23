@@ -14,18 +14,81 @@ export interface Server {
 export type Servers = Server[];
 
 export type HttpMethod =
-  | 'GET'
-  | 'POST'
-  | 'PUT'
-  | 'PATCH'
-  | 'DELETE'
-  | 'HEAD'
-  | 'OPTIONS'
-  | 'TRACE'
-  | 'CONNECT';
+  | 'get'
+  | 'post'
+  | 'put'
+  | 'patch'
+  | 'delete'
+  | 'head'
+  | 'options'
+  | 'trace'
+  | 'connect';
+
+export interface Operation {
+  tags?: string[];
+  summary?: string;
+  description?: string;
+  operationId?: string;
+  parameters?: Array<{
+    name: string;
+    in: string;
+    schema: {
+      type: string;
+      nullable?: boolean;
+    };
+  }>;
+  requestBody?: {
+    'x-name'?: string;
+    description?: string;
+    content: {
+      [media: string]: {
+        schema: {
+          $ref: string;
+        };
+      };
+    };
+    required?: boolean;
+    'x-position'?: number;
+  };
+  responses: {
+    [status: string]: {
+      description: string;
+      content?: {
+        [media: string]: {
+          schema: {
+            $ref: string;
+          };
+        };
+      };
+    };
+  };
+  security?: Array<Record<string, unknown[]>>;
+}
+
+export type Path = Record<HttpMethod, Operation>;
+
+export type Paths = Record<string, Path>;
+
 export interface Document {
   'x-generator': XGenerator;
   openapi: OpenAPIVersion;
   info: Info;
   servers: Servers;
+  paths: Paths;
+}
+
+interface NormalizedOperation {
+  method: HttpMethod;
+  path: string;
+  summary: string;
+  description: string;
+  operationId: string;
+  function: string;
+  payload: string;
+  returns: string;
+}
+
+export interface Normalized {
+  repository: string;
+  operations: NormalizedOperation[];
 }
