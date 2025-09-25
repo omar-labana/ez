@@ -31,9 +31,9 @@ export interface Operation {
   operationId?: string;
   parameters?: Array<{
     name: string;
-    in: string;
+    in: 'query' | 'path';
     schema: {
-      type: string;
+      type?: string;
       nullable?: boolean;
     };
   }>;
@@ -77,7 +77,7 @@ export interface Document {
   paths: Paths;
 }
 
-interface NormalizedOperation {
+export interface NormalizedOperation {
   method: HttpMethod;
   path: string;
   summary: string;
@@ -86,6 +86,8 @@ interface NormalizedOperation {
   function: string;
   payload: string;
   returns: string;
+  parameters: Operation['parameters'];
+  requestBody?: Operation['requestBody'];
 }
 
 export interface Normalized {
